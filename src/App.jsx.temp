@@ -1,0 +1,109 @@
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Categories from './pages/Categories';
+import Orders from './pages/Orders';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import Sidebar from './components/Sidebar';
+import './App.css';
+
+const menuItems = [
+  { id: 1, name: 'Dashboard', icon: '', path: '/' },
+  { id: 2, name: 'Popular Dishes', icon: '', path: '/popular-dishes' },
+  { id: 3, name: 'Fresh Fruits', icon: '', path: '/fresh-fruits' },
+  { id: 4, name: 'Categories', icon: '', path: '/categories' },
+  { id: 5, name: 'Special Offers', icon: '', path: '/special-offers' },
+  { id: 6, name: 'My Orders', icon: '', path: '/my-orders' },
+  { id: 7, name: 'Settings', icon: '', path: '/settings' },
+];
+
+const categories = [
+  {
+    id: 1,
+    name: 'Fast Food',
+    icon: '',
+    image: 'https://images.unsplash.com/photo-1594212699903-6526221588e3?w=800&auto=format',
+    items: ['Burger', 'Pizza', 'Hot Dog', 'French Fries']
+  },
+  {
+    id: 2,
+    name: 'Healthy Food',
+    icon: '',
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format',
+    items: ['Salad', 'Smoothie', 'Grilled Chicken', 'Quinoa Bowl']
+  },
+  {
+    id: 3,
+    name: 'Desserts',
+    icon: '',
+    image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format',
+    items: ['Cake', 'Ice Cream', 'Cookies', 'Pudding']
+  },
+  {
+    id: 4,
+    name: 'Beverages',
+    icon: '',
+    image: 'https://images.unsplash.com/photo-1437418747212-8d9709afab22?w=800&auto=format',
+    items: ['Coffee', 'Tea', 'Smoothies', 'Fresh Juice']
+  }
+];
+
+function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [cart, setCart] = useState([]);
+  const [showCart, setShowCart] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const addToCart = (item) => {
+    setCart(prevCart => [...prevCart, { ...item, quantity: 1 }]);
+  };
+
+  return (
+    <div className="app">
+      <Sidebar 
+        isSidebarOpen={isSidebarOpen} 
+        toggleSidebar={toggleSidebar} 
+        cartItemCount={cart.length}
+        setShowCart={setShowCart}
+      />
+      <main className={`main-content ${!isSidebarOpen ? 'sidebar-closed' : ''}`}>
+        <header className="header">
+          <div className="search-container">
+            <div className="search-bar">
+              <button className="search-icon">🔍</button>
+              <input
+                type="text"
+                placeholder="Search for food..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button className="filter-icon">⚡</button>
+            </div>
+            <div className="search-suggestions">
+              <span className="suggestion-tag">Pizza</span>
+              <span className="suggestion-tag">Burger</span>
+              <span className="suggestion-tag">Sushi</span>
+              <span className="suggestion-tag">Salad</span>
+            </div>
+          </div>
+        </header>
+        <div className="page-container">
+          <Routes>
+            <Route path="/" element={<Home addToCart={addToCart} />} />
+            <Route path="/categories" element={<Categories addToCart={addToCart} />} />
+            <Route path="/orders" element={<Orders cartItems={cart} />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default App;
